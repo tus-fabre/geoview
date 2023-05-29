@@ -39,7 +39,8 @@ cordova/platforms/
 cordova/plugins/
 cordova/www/
 
-
-
 # Production build
 www/
+
+# Visual Studio Code
+.vscode/
