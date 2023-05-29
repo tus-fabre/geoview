@@ -1,0 +1,20 @@
+
+<template>
+  <div id="app">
+
+  <!-- Your main view, should have "view-main" class -->
+  <div class="view view-main view-init safe-areas" data-url="/"></div>
+
+  </div>
+</template>
+<script>
+  document.addEventListener('deviceready', onDeviceReady, false);
+
+  function onDeviceReady() {
+      console.log('Running cordova-' + cordova.platformId + '@' + cordova.version);
+  }
+
+  export default () => {
+    return $render;
+  }
+</script>

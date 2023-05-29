@@ -1,0 +1,142 @@
+<template>
+  <div class="page" data-name="home">
+    <!-- Top Navbar -->
+    <div class="navbar navbar-large">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="title">GeoView</div>
+        <div class="title-large">
+          <div class="title-large-text">GeoView</div>
+        </div>
+      </div>
+    </div>
+    <!-- Toolbarは表示しない -->
+    <!---
+    <div class="toolbar toolbar-bottom">
+      <div class="toolbar-inner">
+        <a href="#" class="link">Left Link</a>
+        <a href="#" class="link">Right Link</a>
+      </div>
+    </div>
+    -->
+    <!-- Scrollable page content-->
+    <div class="page-content">
+      <div class="block-title">現在の位置情報と目的地までの距離を表示</div>
+      <div class="list no-hairlines-md">
+        <ul>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">計測日時</div>
+                <div class="item-input-wrap">
+                  <input id="datetime" type="text" value="--" readonly/>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">現在の緯度・経度</div>
+                <div class="item-input-wrap">
+                  <input id="location" type="text" value="--" readonly />
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">目的地を選択</div>
+                <div class="item-input-wrap input-dropdown-wrap">
+                  <select style="width:100%" id="destination">
+                    ${destinations.map((destination) => $h`
+                      <option value=${destination.location}>${destination.name}</option>
+                    `)}
+                  </select>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="item-content item-input">
+              <div class="item-inner">
+                <div class="item-title item-label">目的地までの距離（メートル）</div>
+                <div class="item-input-wrap">
+                  <input id="distance" type="text" value="--" readonly />
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+        <div class="block">
+          <button class="button button-raised button-fill color-teal" @click=${addGeoLocation}>情報取得</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+<script>
+  import { timestampToDatetime } from '../js/utils/time_util';
+  import { calcDistance } from '../js/utils/distance';
+
+  /*
+   * [FUNCTION] onSuccess
+   * 
+   * [DESCRIPTION]
+   *  navigator.geolocation.getCurrentPosition()が成功したときに呼ばれるコールバック関数
+   */
+  function onSuccess(position) {
+    // 現在地の情報を取得
+    let lat = position.coords.latitude;
+    let lon = position.coords.longitude;
+    // 小数点以下6桁にする
+    lat = Math.floor(lat * 1000000) / 1000000;
+    lon = Math.floor(lon * 1000000) / 1000000;
+
+    document.getElementById('datetime').value = timestampToDatetime(position.timestamp);
+    document.getElementById('location').value = String(lat) + ", " + String(lon);
+    let destination = document.getElementById('destination').value;
+    if (destination != 'none') {
+      let list = destination.split(','); // 緯度と経度に分割
+      let distance = calcDistance(lat, lon, Number(list[0]), Number(list[1])); // 単位：メートル
+      document.getElementById('distance').value = String(Math.floor(distance * 10) / 10); // 小数点一桁にする
+    } else { // 目的地なし
+      document.getElementById('distance').value = "--";
+    }
+  };
+
+  /*
+   * [FUNCTION] onError
+   * 
+   * [DESCRIPTION]
+   *  navigator.geolocation.getCurrentPosition()でエラーが発生したときに呼ばれるコールバック関数
+   */
+  function onError(error) {
+    alert('code: '    + error.code    + '\n' +
+          'message: ' + error.message + '\n');
+  }
+
+  export default (props, { $f7, $store }) => {
+    console.log('Home page Opened');
+    // ストアを利用した目的地一覧（目的地の緯度・経度を取得するため）
+    const destinations = $store.getters.destinations.value;
+    console.log(destinations);
+
+    /*
+     * [ACTION] addGeoLocation
+     * 
+     * [DESCRIPTION]
+     *  「情報取得」ボタンがクリックされたときに起動するアクション
+     */
+    const addGeoLocation = () => {
+      navigator.geolocation.getCurrentPosition(onSuccess, onError);
+    }
+    return $render;
+  }
+  
+/*
+ * HISTORY
+ * [1] 2023/05/29 - First version
+ */
+</script>
