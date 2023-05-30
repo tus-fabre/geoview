@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.tus.f7.geoview" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>GeoView</name>
-    <description>Framework7+Cordova app to show the current geolocation</description>
+    <description>Framework7+Cordova app to show the distance from the current location to a destination</description>
     <author email="toshihiro.ajiki@rs.tus.ac.jp" href="https://rist.tus.ac.jp/en/">
       Tokyo University of Science, Research institute for Science and Technology
     </author>
