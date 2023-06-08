@@ -13,7 +13,8 @@
 
     <platform name="android">
       <preference name="StatusBarOverlaysWebView" value="false" />
-      <preference name="android-minSdkVersion" value="25" />
+      <!-- Android 7.0 (Nougat) or later -->
+      <preference name="android-minSdkVersion" value="24" />
       <preference name="SplashMaintainAspectRatio" value="true" />
       <!-- Android OS 11以降では、以下の定義は廃止
       <splash density="land-hdpi" src="res/screen/android/drawable-hdpi/screen.png" />
